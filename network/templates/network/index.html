@@ -1,0 +1,71 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<h1>All Posts</h1> 
+    
+        {% if user.is_authenticated %}
+        <div class="new-post">
+            <h2> Create new post</h2>
+            <form action="{% url 'new_post' %}" method="post">
+                {% csrf_token %}
+                <textarea name="content" row="4" cols="80"></textarea><br>
+                <div style="text-align:center"><input type="submit" value="Post" class="btn btn-primary"></div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!--To display all posts from users-->
+        <div class="all-posts mx-5">
+            {% for post in posts_of_page %}
+                <div class="row post">
+                    <h5 class="username"> <a href="{% url 'profile' user_id=post.user.id %}">@{{ post.user }}</a></a></h5>
+                    <div class="content"><h6 class="content" id="content_{{ post.id }}"  >{{ post.content }}</h6></div>
+                    <div class="date">{{ post.created_at }}</div> 
+                    {% if user.is_authenticated %}
+                        {% if user == post.user %}
+                            <div class="d-flex justify-content-around">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#modal_edit_post_{{ post.id }}">Edit post</button>
+                            </div>
+                            <!--Modal-->
+                            <div class="modal fade" id="modal_edit_post_{{ post.id }}" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="modal_edit_post_{{ post.id }}">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Edit post</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <textarea rows="5" id="textarea_{{ post.id }}" class="form-control" name="content">{{ post.content }}</textarea>
+                                    </div>
+                                    <div class="modal-footer">                                      
+                                      <button type="button" class="btn btn-primary" onclick="submitFunction({{ post.id }})">Save changes</button>
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {% else %}
+                                  {% if post.id in who_you_liked %}
+                                  <!--heart icons from fontawesome to be implemented-->
+                                  <button class="" id="{{ post.id }}"></button>
+                                  {% else %}
+                                  <button class="" id="{{ post.id }}"></button>
+                                  {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination d-flex justify-content-center">
+                {% if posts_of_page.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ posts_of_page.previous_page_number }}">Previous</a></li>
+                {% endif %}
+                {% if posts_of_page.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ posts_of_page.next_page_number }}">Next</a></li>
+                {% endif %}
+            </ul>
+          </nav>
+{% endblock %}
