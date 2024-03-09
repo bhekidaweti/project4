@@ -9,6 +9,48 @@ import json
 
 from .models import User, Post, Follow, Like
 
+
+
+def get_post_data(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = request.user
+    has_liked = Like.objects.filter(user=user, post=post).exists()
+    post_data = {
+        'id': post.id,
+        'user_id': post.user.id,
+        'content': post.content,
+        'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'likes_count': post.likes_count,
+        'has_liked': has_liked
+    }
+    return JsonResponse(post_data)
+
+
+def delete_like (request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    like = Like.objects.filter(user=user, post=post).first() # Fetch first like object if exists
+    if like:
+        like.delete()
+        post.likes_count = max(0, post.likes_count - 1)
+        post.save()
+        return JsonResponse ({"message": "Like deleted", "likes_count": post.likes_count, "has_liked": False})
+    else:
+        return JsonResponse({"message": "user has not liked this post"})
+    
+def add_like (request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    existing_like = Like.objects.filter(user=user, post=post).first()
+    if not existing_like:
+        new_like = Like(user=user, post=post)
+        new_like.save()
+        post.likes_count += 1
+        post.save()
+        return JsonResponse ({"message": "Like added", "likes_count": post.likes_count, "has_liked": True})
+    else:
+        return JsonResponse({"message": "user has already liked this post"})
+
 def index(request):
     all_posts = Post.objects.all().order_by("id").reverse()
 
@@ -173,3 +215,4 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+

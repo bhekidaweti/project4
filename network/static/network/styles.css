@@ -19,3 +19,12 @@
     margin: 5px 20px;
 
 }
+.fa {
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .fa:hover {
+    color: rgb(63, 126, 47);
+  }

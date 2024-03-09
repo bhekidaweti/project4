@@ -1,0 +1,5 @@
+like buttons needs to be clicked twice before incrementing likes
+find a way to make them increment likes without having to change from thumbs up back to thumbs down
+if a like by default is thumbs up on click it should increment likes 
+by default the like button should stay at thumbs up 
+the like button should go to thumbs down only when it is clicked by the authenticated user but should display all counts from other users

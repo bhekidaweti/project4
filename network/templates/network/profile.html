@@ -5,8 +5,9 @@
 <!--Container for followers and following-->
 <div class="container">
     <div class="row d-flex justify-content-center">
-        <h4 class="col-4">Followers: {{ followers.count }} </h4>
-        <h4 class="col-4">Following: {{ following.count }} </h4>
+        <div><button class="btn btn-primary btn-sm"><h6 class="col-4">Followers:{{ followers.count }} </h6></button>
+            <button class="btn btn-primary btn-sm"><h6 class="col-4">Following:{{ following.count }} </h6></button>
+        </div>
         <!--To make sure user is logged in before following another user-->
         {% if user.is_authenticated %}
             <!--To make sure users do not follow their own profile-->        
@@ -14,15 +15,24 @@
                 {% if is_following %}
                     <form action="{% url 'unfollow' %}" method="post">
                         {% csrf_token %}
+                        <div class="input-container">                        
                         <input type="hidden" name="userfollow" value="{{ user_profile }}" />
-                        <input type="submit" value="unfollow" />
+                        <button type="submit" class="btn btn-danger" title="Unfollow user">
+                            <i class="fa fa-user-times"></i>
+                        </button>
+                        </div>
                     </form>
                 {% else %}
                 <form action="{% url 'follow' %}" method="post">
                     {% csrf_token %}
+                    <div class="input-container">                    
                     <input type="hidden" name="userfollow" value="{{ user_profile }}" />
-                    <input type="submit" value="follow" />
+                    <button type="submit" class="btn btn-success" title="Follow user">
+                        <i class="fa fa-user-plus"></i>
+                    </button>
+                    </div>
                 </form>
+                
                 {% endif %}
             {% endif %}
          {% endif %}
@@ -36,6 +46,7 @@
                     <h5 class="username"> <a href="{% url 'profile' user_id=post.user.id %}">@{{ post.user }}</a></a></h5>
                     <div class="content"><h6 class="content">{{ post.content }}</h6></div>
                     <div class="date">{{ post.created_at }}</div> 
+                    <div class="likes">Likes: {{ post.likes_count }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -49,4 +60,6 @@
                 {% endif %}
             </ul>
           </nav>
+
+          
 {% endblock %}

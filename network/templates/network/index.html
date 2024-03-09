@@ -40,24 +40,26 @@
                                     <textarea rows="5" id="textarea_{{ post.id }}" class="form-control" name="content">{{ post.content }}</textarea>
                                     </div>
                                     <div class="modal-footer">                                      
-                                      <button type="button" class="btn btn-primary" onclick="submitFunction({{ post.id }})">Save changes</button>
+                                      <button type="button" class="btn btn-primary" onclick="submitFunction('{{ post.id }}')">Save changes</button>
                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                               {% else %}
-                                  {% if post.id in who_you_liked %}
-                                  <!--heart icons from fontawesome to be implemented-->
-                                  <button class="" id="{{ post.id }}"></button>
-                                  {% else %}
-                                  <button class="" id="{{ post.id }}"></button>
-                                  {% endif %}
+                              <div>
+                                <i class="fa fa-thumbs-up" onclick="likeFunction('{{ post.id }}')" id="{{ post.id}}">
+                                <span id="likes-count_{{ post.id }}">{{ post.likes_count }}</span>
+                                </i>
+                              </div>
                         {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}
         </div>
+
+        
+        <!--Pagination-->
         <nav aria-label="Page navigation example">
             <ul class="pagination d-flex justify-content-center">
                 {% if posts_of_page.has_previous %}
@@ -69,3 +71,4 @@
             </ul>
           </nav>
 {% endblock %}
+
